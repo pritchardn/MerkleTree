@@ -68,10 +68,10 @@ def compare_mktree(x: MerkleTree, y: MerkleTree):
     :param y: The second MerkleTree
     :return: True if the trees are identical, false otherwise
     """
-    if type(x) != MerkleTree or type(y) != MerkleTree:
-        raise TypeError("Must compare MerkleTrees")
     if x is None and y is None:
         return True
+    if type(x) != MerkleTree or type(y) != MerkleTree:
+        raise TypeError("Must compare MerkleTrees")
     if x is not None and y is not None:
         return ((x.data.hash == y.data.hash) and
                 compare_mktree(x.left, y.left) and
