@@ -1,5 +1,5 @@
 # Copyright (c) 2020 N.J. Pritchard
-from Node import Node, node_compare, HashAlg
+from Node import Node, node_compare
 
 
 class TestNode:
@@ -24,14 +24,6 @@ class TestNode:
 
     def test_generate_hash(self):
         assert True
-
-    def test_change_hash(self):
-        self.x.add_data([1, 2, 3, 4])
-        self.x.generate_hash()
-        old_hash = self.x.hash
-        self.x.change_hashalg(HashAlg.MD5)
-        self.x.generate_hash()
-        assert old_hash != self.x.hash
 
 
 class TestComparison:

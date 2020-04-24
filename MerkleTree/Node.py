@@ -1,31 +1,18 @@
 # Copyright (c) 2020 N.J. Pritchard
 import enum
 import json
-
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
-
-
-class HashAlg(enum.Enum):
-    SHA256 = 1
-    SHA3_256 = 2
-    MD5 = 3
+import hashlib
 
 
 class Node(object):
     """
     Our own implemenetation of a data-node as a precursor to a block structure.
     Abstracts away hash generation
-
-    TODO: Change to Hashlib
     """
 
     def __init__(self):
         self.data = {}
         self.data_serial = None
-        self.digest = None
-        self.hash_algorithm = hashes.SHA256()
-        self.hashtype = HashAlg.SHA256
         self.hash = None
         self.changed = False
 
@@ -45,31 +32,13 @@ class Node(object):
     def get_data(self):
         return self.data
 
-    def change_hashalg(self, alg: HashAlg):
-        """
-        Changes the choice of internal hash function from a set of enum
-        :param alg: A HashAlg enum
-        """
-        if alg != self.hashtype and type(alg) == HashAlg:
-            self.hashtype = alg
-            self.changed = True
-            if alg == HashAlg.SHA256:
-                self.hash_algorithm = hashes.SHA256()
-            elif alg == HashAlg.SHA3_256:
-                self.hash_algorithm = hashes.SHA3_256()
-            elif alg == HashAlg.MD5:
-                self.hash_algorithm = hashes.MD5()
-
     def generate_hash(self):
         """
         Hashes the current data
         """
         if self.changed:
-            self.digest = hashes.Hash(self.hash_algorithm, backend=default_backend())
             self.data_serial = json.dumps(self.data, sort_keys=True)
-            self.digest.update(self.data_serial.encode(encoding="utf-8"))
-            self.hash = str(self.digest.finalize())
-            self.digest = None
+            self.hash = hashlib.sha3_256(self.data_serial.encode(encoding="utf-8")).hexdigest()
             self.changed = False
 
     def print(self):
